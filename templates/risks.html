@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row mb-5">
+    <div class="col-md-8 mx-auto text-center">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">
+            <i class="fas fa-chart-bar" style="color: var(--accent-blue); filter: drop-shadow(0 0 12px rgba(99,102,241,0.3));"></i>
+        </div>
+        <h1 style="font-weight: 800; font-size: 2.5rem; letter-spacing: -0.5px;">Risk Classification</h1>
+        <p class="lead">
+            A simplified educational scale to help you prioritize findings.
+            No complex scoring — just clear, actionable categories.
+        </p>
+    </div>
+</div>
+
+<!-- HIGH -->
+<div class="card mb-4" style="border-left: 4px solid var(--accent-red) !important;">
+    <div class="card-body">
+        <div class="row align-items-center">
+            <div class="col-md-2 text-center mb-3 mb-md-0">
+                <div class="risk-circle high">🔴</div>
+            </div>
+            <div class="col-md-10">
+                <h3 style="color: var(--accent-red); font-weight: 700;">High Risk <small class="text-muted" style="font-size: 0.6em; font-weight: 400;">Attention Recommended</small></h3>
+                <p style="color: var(--text-secondary);">
+                    <strong style="color: var(--text-primary);">Definition:</strong> Services that typically grant control over the system or direct access to raw data.
+                </p>
+                <p style="color: var(--text-secondary);">
+                    <strong style="color: var(--text-primary);">Examples:</strong> Remote Desktop, database direct access, unencrypted file transfer protocols.
+                </p>
+                <div class="alert alert-danger mb-0">
+                    <i class="fas fa-shield-virus me-2"></i><strong>Action:</strong> Ask yourself — "Does the entire internet need access to this?"
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MEDIUM -->
+<div class="card mb-4" style="border-left: 4px solid var(--accent-amber) !important;">
+    <div class="card-body">
+        <div class="row align-items-center">
+            <div class="col-md-2 text-center mb-3 mb-md-0">
+                <div class="risk-circle medium">🟡</div>
+            </div>
+            <div class="col-md-10">
+                <h3 style="color: var(--accent-amber); font-weight: 700;">Medium Risk <small class="text-muted" style="font-size: 0.6em; font-weight: 400;">Review Needed</small></h3>
+                <p style="color: var(--text-secondary);">
+                    <strong style="color: var(--text-primary);">Definition:</strong> Useful but complex services that may leak system information or run software needing frequent updates.
+                </p>
+                <p style="color: var(--text-secondary);">
+                    <strong style="color: var(--text-primary);">Examples:</strong> Email servers, specialized web administration tools.
+                </p>
+                <div class="alert alert-warning mb-0">
+                    <i class="fas fa-wrench me-2"></i><strong>Action:</strong> Ensure software on these ports is up-to-date and patched.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- LOW -->
+<div class="card mb-4" style="border-left: 4px solid var(--accent-green) !important;">
+    <div class="card-body">
+        <div class="row align-items-center">
+            <div class="col-md-2 text-center mb-3 mb-md-0">
+                <div class="risk-circle low">🟢</div>
+            </div>
+            <div class="col-md-10">
+                <h3 style="color: var(--accent-green); font-weight: 700;">Low Risk <small class="text-muted" style="font-size: 0.6em; font-weight: 400;">Informational</small></h3>
+                <p style="color: var(--text-secondary);">
+                    <strong style="color: var(--text-primary);">Definition:</strong> Standard services expected to be open on a web server, or services with very specific, limited use.
+                </p>
+                <p style="color: var(--text-secondary);">
+                    <strong style="color: var(--text-primary);">Examples:</strong> Public websites (HTTP/HTTPS).
+                </p>
+                <div class="alert alert-success mb-0">
+                    <i class="fas fa-check-circle me-2"></i><strong>Action:</strong> Normal behavior for a web server. No immediate concern.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center mt-4">
+    <a href="{{ url_for('index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>Return Home</a>
+</div>
+{% endblock %}

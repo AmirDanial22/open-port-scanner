@@ -1,0 +1,410 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="text-center mb-5" style="animation: fadeInUp 0.4s ease-out;">
+    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">
+        <i class="fas fa-server" style="color: var(--accent-cyan); filter: drop-shadow(0 0 12px rgba(34,211,238,0.3));"></i>
+    </div>
+    <h1 style="font-weight: 800; font-size: 2.5rem; letter-spacing: -0.5px;">Common Ports Explained</h1>
+    <p class="lead" style="max-width: 520px; margin: 0 auto;">
+        Educational guide to the 25 ports scanned by OPCF.<br>
+        Understand what each port does and why it matters.
+    </p>
+    <div class="mt-4" style="max-width: 420px; margin: 0 auto;">
+        <div style="position: relative;">
+            <i class="fas fa-search" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+            <input type="text" id="searchInput" placeholder="Search by port, service or keyword..."
+                   class="form-control" style="padding-left: 42px; border-radius: 50px; font-size: 0.9rem;">
+        </div>
+    </div>
+</div>
+
+<div id="portsGrid" class="row g-3">
+
+    <!-- Port Card Template: 21 FTP -->
+    <div class="col-md-6 col-lg-4 port-item">
+        <div class="card h-100" style="border-left: 3px solid var(--accent-red) !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span style="font-family: var(--font-mono); font-size: 2rem; font-weight: 800; color: var(--accent-red);">21</span>
+                    <span class="badge bg-danger">HIGH RISK</span>
+                </div>
+                <h5 class="fw-bold mb-1">FTP</h5>
+                <small class="text-muted d-block mb-2">File Transfer Protocol</small>
+                <p class="text-secondary mb-0" style="font-size: 0.875rem;">Uploads and downloads files between client and server. Transmits data and passwords in plain text.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 22 SSH -->
+    <div class="col-md-6 col-lg-4 port-item">
+        <div class="card h-100" style="border-left: 3px solid var(--accent-amber) !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span style="font-family: var(--font-mono); font-size: 2rem; font-weight: 800; color: var(--accent-green);">22</span>
+                    <span class="badge bg-warning">MEDIUM</span>
+                </div>
+                <h5 class="fw-bold mb-1">SSH</h5>
+                <small class="text-muted d-block mb-2">Secure Shell</small>
+                <p class="text-secondary mb-0" style="font-size: 0.875rem;">Secure encrypted remote login and file transfer. Modern replacement for Telnet.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 23 Telnet -->
+    <div class="col-md-6 col-lg-4 port-item">
+        <div class="card h-100" style="border-left: 3px solid var(--accent-red) !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span style="font-family: var(--font-mono); font-size: 2rem; font-weight: 800; color: var(--accent-red);">23</span>
+                    <span class="badge bg-danger">HIGH RISK</span>
+                </div>
+                <h5 class="fw-bold mb-1">Telnet</h5>
+                <small class="text-muted d-block mb-2">Telnet Protocol</small>
+                <p class="text-secondary mb-0" style="font-size: 0.875rem;">Old remote login protocol. Everything sent in plain text — extremely insecure.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 25 SMTP -->
+    <div class="col-md-6 col-lg-4 port-item">
+        <div class="card h-100" style="border-left: 3px solid var(--accent-red) !important; border-color: rgba(245,158,11,0.25) !important; border-left-color: var(--accent-red) !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span style="font-family: var(--font-mono); font-size: 2rem; font-weight: 800; color: var(--accent-amber);">25</span>
+                    <span class="badge bg-danger">HIGH RISK</span>
+                </div>
+                <h5 class="fw-bold mb-1">SMTP</h5>
+                <small class="text-muted d-block mb-2">Simple Mail Transfer Protocol</small>
+                <p class="text-secondary mb-0" style="font-size: 0.875rem;">Default port for sending emails. Frequently abused for spam and open-relay attacks.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 53 DNS -->
+    <div class="col-md-6 col-lg-4 port-item">
+        <div class="card h-100" style="border-left: 3px solid var(--accent-amber) !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span style="font-family: var(--font-mono); font-size: 2rem; font-weight: 800; color: var(--accent-blue);">53</span>
+                    <span class="badge bg-warning">MEDIUM</span>
+                </div>
+                <h5 class="fw-bold mb-1">DNS</h5>
+                <small class="text-muted d-block mb-2">Domain Name System</small>
+                <p class="text-secondary mb-0" style="font-size: 0.875rem;">Translates domain names (google.com) into IP addresses.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 80 HTTP -->
+    <div class="col-md-6 col-lg-4 port-item">
+        <div class="card h-100" style="border-left: 3px solid var(--accent-green) !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span style="font-family: var(--font-mono); font-size: 2rem; font-weight: 800; color: var(--accent-blue);">80</span>
+                    <span class="badge bg-success">LOW</span>
+                </div>
+                <h5 class="fw-bold mb-1">HTTP</h5>
+                <small class="text-muted d-block mb-2">Hypertext Transfer Protocol</small>
+                <p class="text-secondary mb-0" style="font-size: 0.875rem;">Standard unencrypted web traffic (normal websites).</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 110 POP3 -->
+    <div class="col-md-6 col-lg-4 port-item">
+        <div class="card h-100" style="border-left: 3px solid var(--accent-amber) !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span style="font-family: var(--font-mono); font-size: 2rem; font-weight: 800; color: var(--accent-blue);">110</span>
+                    <span class="badge bg-warning">MEDIUM</span>
+                </div>
+                <h5 class="fw-bold mb-1">POP3</h5>
+                <small class="text-muted d-block mb-2">Post Office Protocol v3</small>
+                <p class="text-secondary mb-0" style="font-size: 0.875rem;">Used by email clients to download emails from server.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 135 RPC -->
+    <div class="col-md-6 col-lg-4 port-item">
+        <div class="card h-100" style="border-left: 3px solid var(--accent-red) !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span style="font-family: var(--font-mono); font-size: 2rem; font-weight: 800; color: var(--accent-red);">135</span>
+                    <span class="badge bg-danger">HIGH RISK</span>
+                </div>
+                <h5 class="fw-bold mb-1">RPC</h5>
+                <small class="text-muted d-block mb-2">Remote Procedure Call</small>
+                <p class="text-secondary mb-0" style="font-size: 0.875rem;">Microsoft service allowing programs to execute code on remote computers.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 139 NetBIOS -->
+    <div class="col-md-6 col-lg-4 port-item">
+        <div class="card h-100" style="border-left: 3px solid var(--accent-red) !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span style="font-family: var(--font-mono); font-size: 2rem; font-weight: 800; color: var(--accent-red);">139</span>
+                    <span class="badge bg-danger">HIGH RISK</span>
+                </div>
+                <h5 class="fw-bold mb-1">NetBIOS</h5>
+                <small class="text-muted d-block mb-2">NetBIOS Session Service</small>
+                <p class="text-secondary mb-0" style="font-size: 0.875rem;">Legacy Windows file and printer sharing service.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 143 IMAP -->
+    <div class="col-md-6 col-lg-4 port-item">
+        <div class="card h-100" style="border-left: 3px solid var(--accent-amber) !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span style="font-family: var(--font-mono); font-size: 2rem; font-weight: 800; color: var(--accent-blue);">143</span>
+                    <span class="badge bg-warning">MEDIUM</span>
+                </div>
+                <h5 class="fw-bold mb-1">IMAP</h5>
+                <small class="text-muted d-block mb-2">Internet Message Access Protocol</small>
+                <p class="text-secondary mb-0" style="font-size: 0.875rem;">Allows email clients to access and manage emails on the server.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 443 HTTPS -->
+    <div class="col-md-6 col-lg-4 port-item">
+        <div class="card h-100" style="border-left: 3px solid var(--accent-green) !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span style="font-family: var(--font-mono); font-size: 2rem; font-weight: 800; color: var(--accent-green);">443</span>
+                    <span class="badge bg-success">LOW</span>
+                </div>
+                <h5 class="fw-bold mb-1">HTTPS</h5>
+                <small class="text-muted d-block mb-2">Hypertext Transfer Protocol Secure</small>
+                <p class="text-secondary mb-0" style="font-size: 0.875rem;">Encrypted and secure web traffic.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 445 SMB -->
+    <div class="col-md-6 col-lg-4 port-item">
+        <div class="card h-100" style="border-left: 3px solid var(--accent-red) !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span style="font-family: var(--font-mono); font-size: 2rem; font-weight: 800; color: var(--accent-red);">445</span>
+                    <span class="badge bg-danger">HIGH RISK</span>
+                </div>
+                <h5 class="fw-bold mb-1">SMB</h5>
+                <small class="text-muted d-block mb-2">Server Message Block</small>
+                <p class="text-secondary mb-0" style="font-size: 0.875rem;">Windows file/printer sharing (famous for EternalBlue vulnerability).</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 993 IMAPS -->
+    <div class="col-md-6 col-lg-4 port-item">
+        <div class="card h-100" style="border-left: 3px solid var(--accent-green) !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span style="font-family: var(--font-mono); font-size: 2rem; font-weight: 800; color: var(--accent-blue);">993</span>
+                    <span class="badge bg-success">LOW</span>
+                </div>
+                <h5 class="fw-bold mb-1">IMAPS</h5>
+                <small class="text-muted d-block mb-2">IMAP over SSL/TLS</small>
+                <p class="text-secondary mb-0" style="font-size: 0.875rem;">Secure version of IMAP for email access.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 995 POP3S -->
+    <div class="col-md-6 col-lg-4 port-item">
+        <div class="card h-100" style="border-left: 3px solid var(--accent-green) !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span style="font-family: var(--font-mono); font-size: 2rem; font-weight: 800; color: var(--accent-blue);">995</span>
+                    <span class="badge bg-success">LOW</span>
+                </div>
+                <h5 class="fw-bold mb-1">POP3S</h5>
+                <small class="text-muted d-block mb-2">POP3 over SSL/TLS</small>
+                <p class="text-secondary mb-0" style="font-size: 0.875rem;">Secure version of POP3 for downloading emails.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1723 PPTP -->
+    <div class="col-md-6 col-lg-4 port-item">
+        <div class="card h-100" style="border-left: 3px solid var(--accent-red) !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span style="font-family: var(--font-mono); font-size: 2rem; font-weight: 800; color: var(--accent-red);">1723</span>
+                    <span class="badge bg-danger">HIGH RISK</span>
+                </div>
+                <h5 class="fw-bold mb-1">PPTP</h5>
+                <small class="text-muted d-block mb-2">Point-to-Point Tunneling Protocol</small>
+                <p class="text-secondary mb-0" style="font-size: 0.875rem;">Old VPN protocol — considered insecure by modern standards.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3306 MySQL -->
+    <div class="col-md-6 col-lg-4 port-item">
+        <div class="card h-100" style="border-left: 3px solid var(--accent-red) !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span style="font-family: var(--font-mono); font-size: 2rem; font-weight: 800; color: var(--accent-red);">3306</span>
+                    <span class="badge bg-danger">HIGH RISK</span>
+                </div>
+                <h5 class="fw-bold mb-1">MySQL</h5>
+                <small class="text-muted d-block mb-2">MySQL Database</small>
+                <p class="text-secondary mb-0" style="font-size: 0.875rem;">Default port for MySQL database server.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3389 RDP -->
+    <div class="col-md-6 col-lg-4 port-item">
+        <div class="card h-100" style="border-left: 3px solid var(--accent-red) !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span style="font-family: var(--font-mono); font-size: 2rem; font-weight: 800; color: var(--accent-red);">3389</span>
+                    <span class="badge bg-danger">HIGH RISK</span>
+                </div>
+                <h5 class="fw-bold mb-1">RDP</h5>
+                <small class="text-muted d-block mb-2">Remote Desktop Protocol</small>
+                <p class="text-secondary mb-0" style="font-size: 0.875rem;">Windows Remote Desktop connection.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5432 PostgreSQL -->
+    <div class="col-md-6 col-lg-4 port-item">
+        <div class="card h-100" style="border-left: 3px solid var(--accent-red) !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span style="font-family: var(--font-mono); font-size: 2rem; font-weight: 800; color: var(--accent-red);">5432</span>
+                    <span class="badge bg-danger">HIGH RISK</span>
+                </div>
+                <h5 class="fw-bold mb-1">PostgreSQL</h5>
+                <small class="text-muted d-block mb-2">PostgreSQL Database</small>
+                <p class="text-secondary mb-0" style="font-size: 0.875rem;">Default port for PostgreSQL database server.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5900 VNC -->
+    <div class="col-md-6 col-lg-4 port-item">
+        <div class="card h-100" style="border-left: 3px solid var(--accent-red) !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span style="font-family: var(--font-mono); font-size: 2rem; font-weight: 800; color: var(--accent-red);">5900</span>
+                    <span class="badge bg-danger">HIGH RISK</span>
+                </div>
+                <h5 class="fw-bold mb-1">VNC</h5>
+                <small class="text-muted d-block mb-2">Virtual Network Computing</small>
+                <p class="text-secondary mb-0" style="font-size: 0.875rem;">Remote desktop and screen sharing protocol.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6379 Redis -->
+    <div class="col-md-6 col-lg-4 port-item">
+        <div class="card h-100" style="border-left: 3px solid var(--accent-red) !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span style="font-family: var(--font-mono); font-size: 2rem; font-weight: 800; color: var(--accent-red);">6379</span>
+                    <span class="badge bg-danger">HIGH RISK</span>
+                </div>
+                <h5 class="fw-bold mb-1">Redis</h5>
+                <small class="text-muted d-block mb-2">Redis In-Memory Store</small>
+                <p class="text-secondary mb-0" style="font-size: 0.875rem;">In-memory data store and caching system.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 8080 HTTP-Alt -->
+    <div class="col-md-6 col-lg-4 port-item">
+        <div class="card h-100" style="border-left: 3px solid var(--accent-amber) !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span style="font-family: var(--font-mono); font-size: 2rem; font-weight: 800; color: var(--accent-blue);">8080</span>
+                    <span class="badge bg-warning">MEDIUM</span>
+                </div>
+                <h5 class="fw-bold mb-1">HTTP Alternate</h5>
+                <small class="text-muted d-block mb-2">HTTP Alternate Port</small>
+                <p class="text-secondary mb-0" style="font-size: 0.875rem;">Alternative port used by web servers, proxies, and development tools.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 8443 HTTPS-Alt -->
+    <div class="col-md-6 col-lg-4 port-item">
+        <div class="card h-100" style="border-left: 3px solid var(--accent-green) !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span style="font-family: var(--font-mono); font-size: 2rem; font-weight: 800; color: var(--accent-blue);">8443</span>
+                    <span class="badge bg-success">LOW</span>
+                </div>
+                <h5 class="fw-bold mb-1">HTTPS Alternate</h5>
+                <small class="text-muted d-block mb-2">HTTPS Alternate Port</small>
+                <p class="text-secondary mb-0" style="font-size: 0.875rem;">Alternative secure web port.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 8888 HTTP-Alt2 -->
+    <div class="col-md-6 col-lg-4 port-item">
+        <div class="card h-100" style="border-left: 3px solid var(--accent-amber) !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span style="font-family: var(--font-mono); font-size: 2rem; font-weight: 800; color: var(--accent-blue);">8888</span>
+                    <span class="badge bg-warning">MEDIUM</span>
+                </div>
+                <h5 class="fw-bold mb-1">HTTP Alternate 2</h5>
+                <small class="text-muted d-block mb-2">HTTP Alternate Port 2</small>
+                <p class="text-secondary mb-0" style="font-size: 0.875rem;">Common alternative web port (also default for Jupyter Notebook).</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 9090 WebSM -->
+    <div class="col-md-6 col-lg-4 port-item">
+        <div class="card h-100" style="border-left: 3px solid var(--accent-amber) !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span style="font-family: var(--font-mono); font-size: 2rem; font-weight: 800; color: var(--accent-blue);">9090</span>
+                    <span class="badge bg-warning">MEDIUM</span>
+                </div>
+                <h5 class="fw-bold mb-1">WebSM</h5>
+                <small class="text-muted d-block mb-2">Web-based System Management</small>
+                <p class="text-secondary mb-0" style="font-size: 0.875rem;">Used for web-based system management and monitoring tools.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 27017 MongoDB -->
+    <div class="col-md-6 col-lg-4 port-item">
+        <div class="card h-100" style="border-left: 3px solid var(--accent-red) !important;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span style="font-family: var(--font-mono); font-size: 2rem; font-weight: 800; color: var(--accent-red);">27017</span>
+                    <span class="badge bg-danger">HIGH RISK</span>
+                </div>
+                <h5 class="fw-bold mb-1">MongoDB</h5>
+                <small class="text-muted d-block mb-2">MongoDB NoSQL Database</small>
+                <p class="text-secondary mb-0" style="font-size: 0.875rem;">Default port for MongoDB NoSQL database.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+document.getElementById('searchInput').addEventListener('keyup', function(e) {
+    const filter = e.target.value.toLowerCase();
+    document.querySelectorAll('.port-item').forEach(item => {
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.includes(filter) ? '' : 'none';
+    });
+});
+</script>
+{% endblock %}
