@@ -207,7 +207,8 @@ def chat():
                 raise model_error
                 
         except Exception as e:
-            return {"response": f"My Gemini brain encountered an error: {str(e)}"}, 500
+            # If Gemini fails (e.g., due to invalid API key), log and fall back to Mock mode
+            print(f"Gemini API Error (falling back to local mode): {str(e)}")
 
     # Fallback / Mock Mode Logic
     bot_reply = "I'm not sure about that. Try asking about a specific port like 'Port 80' or asking what I can do!"
