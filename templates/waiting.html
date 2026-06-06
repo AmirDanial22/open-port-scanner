@@ -1,0 +1,121 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-8 text-center">
+        <!-- Giant Pulsing Radar/Scanner Icon -->
+        <div class="position-relative d-inline-block mb-4">
+            <div class="scanner-circle"></div>
+            <div class="scanner-radar">
+                <i class="fas fa-radar fa-spin fa-3x" style="color: var(--accent-cyan); text-shadow: 0 0 15px rgba(34, 211, 238, 0.4);"></i>
+            </div>
+        </div>
+
+        <h2 class="fw-bold mb-3" style="letter-spacing: -0.5px;">Awaiting Local Agent Connection</h2>
+        
+        <p class="lead mb-4" style="font-size: 1.05rem;">
+            Target IP: <span class="badge bg-primary px-3 py-2 fs-6" style="font-family: var(--font-mono);">{{ ip_address }}</span>
+        </p>
+
+        <!-- Glassmorphism Card for instructions -->
+        <div class="card mb-4 text-start" style="background: rgba(17, 24, 39, 0.6); border-color: rgba(99, 102, 241, 0.15) !important;">
+            <div class="card-header bg-primary d-flex align-items-center gap-2">
+                <i class="fas fa-terminal" style="color: var(--accent-cyan);"></i>
+                <span>How to Execute This Scan</span>
+            </div>
+            <div class="card-body">
+                <p class="small text-muted mb-3">
+                    Since the server is hosted in the cloud, it cannot scan your local networks directly. You must run the lightweight scanning agent locally on your machine to perform the check.
+                </p>
+                <ol class="ps-3 mb-0" style="color: var(--text-secondary); font-size: 0.9rem;">
+                    <li class="mb-2">
+                        Download the scanning agent executable:
+                        <div class="mt-2 mb-3">
+                            <a href="/static/agent.exe" class="btn btn-primary btn-sm px-3" download>
+                                <i class="fas fa-download me-1"></i> Download agent.exe
+                            </a>
+                        </div>
+                    </li>
+                    <li class="mb-2">
+                        Open your command prompt or terminal and navigate to your download directory.
+                    </li>
+                    <li class="mb-2">
+                        Run the executable:
+                        <div class="mt-2 p-2 bg-dark rounded border border-glass" style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent-cyan);">
+                            .\agent.exe
+                        </div>
+                    </li>
+                    <li>
+                        Enter your server URL if prompted:
+                        <div class="mt-2 p-2 bg-dark rounded border border-glass" style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);">
+                            Default: <span id="current-url" style="color: var(--accent-cyan);"></span>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center justify-content-center gap-2 mb-3">
+            <div class="spinner-border spinner-border-sm text-info" role="status"></div>
+            <span class="text-muted" style="font-size: 0.875rem;">Waiting for agent to upload results...</span>
+        </div>
+        
+        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary btn-sm">Cancel Scan</a>
+    </div>
+</div>
+
+<!-- Custom CSS for radar effect -->
+<style>
+    .scanner-circle {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        border: 2px solid var(--accent-cyan);
+        animation: radarGlow 2s infinite ease-out;
+        opacity: 0;
+    }
+    .scanner-radar {
+        position: relative;
+        background: rgba(17, 24, 39, 0.9);
+        border: 2px solid var(--border-glass);
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--glow-cyan);
+    }
+    
+    @keyframes radarGlow {
+        0% { width: 80px; height: 80px; opacity: 0.8; }
+        100% { width: 180px; height: 180px; opacity: 0; }
+    }
+</style>
+
+<!-- Polling Script -->
+<script>
+    // Set the current origin URL in the instruction guide
+    document.getElementById('current-url').textContent = window.location.origin;
+
+    const scanId = "{{ scan_id }}";
+    
+    function checkStatus() {
+        fetch(`/scan/status/${scanId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'completed') {
+                    window.location.href = `/scan/results/${scanId}`;
+                }
+            })
+            .catch(err => console.error("Error checking scan status:", err));
+    }
+
+    // Check status every 2 seconds
+    const interval = setInterval(checkStatus, 2000);
+</script>
+{% endblock %}

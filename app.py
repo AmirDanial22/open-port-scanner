@@ -42,54 +42,113 @@ def scan():
         flash(f'Invalid IP: {message}', 'danger')
         return redirect(url_for('index'))
     
-    # Check if scan is already in progress for this IP
-    if ip_address in active_scans:
-        flash('Scan is already in progress for this IP.', 'warning')
-        return redirect(url_for('index'))
+    # Check if scan is already in progress for this IP in database
+    existing_scans = ScanResult.query.order_by(ScanResult.id.desc()).all()
+    for s in existing_scans:
+        if s.ip_address == ip_address and isinstance(s.results, dict) and s.results.get('status') == 'pending':
+            flash('Scan is already in progress for this IP.', 'warning')
+            return redirect(url_for('index'))
     
-    # Mark scan as active
-    active_scans[ip_address] = 'scanning'
+    # Create a pending scan job record
+    initial_results = {
+        "status": "pending",
+        "ip": ip_address,
+        "open_ports": [],
+        "total_scanned": 25,
+        "total_open": 0,
+        "scan_time": 0.0
+    }
     
     try:
-        # Perform scan (this might take some time)
-        scan_results = scan_ip(ip_address)
-        
-        # Add risk classification
-        scan_results = add_risk_to_results(scan_results)
-        
-        # Save to database
         scan_record = ScanResult(
             ip_address=ip_address,
-            results=scan_results
+            results=initial_results
         )
         db.session.add(scan_record)
         db.session.commit()
         
-        # Remove from active scans
-        if ip_address in active_scans:
-            del active_scans[ip_address]
-        
-        # Prepare data for template
-        scan_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        
-        # Inject educational notes
-        from modules.countermeasures import get_countermeasures
-        for port_data in scan_results['open_ports']:
-            port_data['student_note'] = get_port_note(port_data['port'])
-            if port_data.get('risk_level') == 'HIGH':
-                port_data['countermeasures'] = get_countermeasures(port_data['port'])
-
-        return render_template('results.html', 
-                             results=scan_results, 
-                             scan_date=scan_date)
+        return redirect(url_for('waiting_room', scan_id=scan_record.id))
         
     except Exception as e:
-        # Remove from active scans on error
-        if ip_address in active_scans:
-            del active_scans[ip_address]
-        
-        flash(f'Scan error: {str(e)}', 'danger')
+        flash(f'Error starting scan: {str(e)}', 'danger')
         return redirect(url_for('index'))
+
+@app.route('/scan/waiting/<int:scan_id>')
+def waiting_room(scan_id):
+    scan_record = ScanResult.query.get_or_404(scan_id)
+    if isinstance(scan_record.results, dict) and scan_record.results.get('status') == 'completed':
+        return redirect(url_for('scan_results', scan_id=scan_id))
+    return render_template('waiting.html', scan_id=scan_id, ip_address=scan_record.ip_address)
+
+@app.route('/scan/status/<int:scan_id>')
+def scan_status(scan_id):
+    scan_record = ScanResult.query.get_or_404(scan_id)
+    status = 'pending'
+    if isinstance(scan_record.results, dict):
+        status = scan_record.results.get('status', 'pending')
+    return {
+        "status": status,
+        "ip": scan_record.ip_address
+    }
+
+@app.route('/scan/results/<int:scan_id>')
+def scan_results(scan_id):
+    scan_record = ScanResult.query.get_or_404(scan_id)
+    if isinstance(scan_record.results, dict) and scan_record.results.get('status') == 'pending':
+        return redirect(url_for('waiting_room', scan_id=scan_id))
+    
+    scan_date = scan_record.scan_date.strftime('%Y-%m-%d %H:%M:%S')
+    return render_template('results.html', 
+                         results=scan_record.results, 
+                         scan_date=scan_date)
+
+@app.route('/api/agent/get-job')
+def agent_get_job():
+    scans = ScanResult.query.order_by(ScanResult.id.asc()).all()
+    for scan in scans:
+        if isinstance(scan.results, dict) and scan.results.get('status') == 'pending':
+            return {
+                "scan_id": scan.id,
+                "ip_address": scan.ip_address
+            }
+    return {"message": "No pending jobs"}, 404
+
+@app.route('/api/agent/submit-result/<int:scan_id>', methods=['POST'])
+def agent_submit_result(scan_id):
+    scan_record = ScanResult.query.get_or_404(scan_id)
+    data = request.json
+    
+    if not data or 'open_ports' not in data:
+        return {"error": "Invalid payload"}, 400
+        
+    open_ports = data.get('open_ports', [])
+    scan_time = data.get('scan_time', 0.0)
+    
+    scan_results = {
+        'status': 'completed',
+        'ip': scan_record.ip_address,
+        'open_ports': open_ports,
+        'total_scanned': data.get('total_scanned', 25),
+        'total_open': len(open_ports),
+        'scan_time': scan_time
+    }
+    
+    # Server-side enrichment (risk classification + NVD)
+    scan_results = add_risk_to_results(scan_results)
+    
+    # Inject educational notes and countermeasures
+    for port_data in scan_results['open_ports']:
+        port_data['student_note'] = get_port_note(port_data['port'])
+        if port_data.get('risk_level') == 'HIGH':
+            port_data['countermeasures'] = get_countermeasures(port_data['port'])
+            
+    scan_record.results = scan_results
+    
+    from sqlalchemy.orm.attributes import flag_modified
+    flag_modified(scan_record, "results")
+    db.session.commit()
+    
+    return {"message": "Results updated successfully"}
 
 @app.route('/history')
 def history():
