@@ -83,7 +83,7 @@ def start_agent():
     print("======================================================")
     
     # Prompt the user for the server URL (with a default fallback)
-    default_url = "http://127.0.0.1:5000"
+    default_url = "https://open-port-scanner-585x.onrender.com"
     server_input = input(f"Enter Hosted Server URL [{default_url}]: ").strip()
     server_url = server_input if server_input else default_url
     
@@ -117,7 +117,7 @@ def start_agent():
                 submit_res = requests.post(
                     f"{server_url}/api/agent/submit-result/{scan_id}", 
                     json=payload, 
-                    timeout=10
+                    timeout=60
                 )
                 
                 if submit_res.status_code == 200:
