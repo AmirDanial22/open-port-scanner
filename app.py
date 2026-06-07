@@ -214,9 +214,9 @@ def chat():
     bot_reply = "I'm not sure about that. Try asking about a specific port like 'Port 80' or asking what I can do!"
     
     if "hello" in user_message or "hi" in user_message:
-        bot_reply = "Hello! I'm Port Buddy. I can help explain what different network ports do. Ask me about a port number! (Add GEMINI_API_KEY to your .env to make me smarter)"
+        bot_reply = "Hello! I'm Port Buddy. I can help explain what different network ports do. Ask me about a port number!"
     elif "help" in user_message:
-        bot_reply = "You can ask me things like 'What is port 443?' or 'Tell me about FTP'. Add a GEMINI_API_KEY to your .env to unlock my full brain!"
+        bot_reply = "You can ask me things like 'What is port 443?' or 'Tell me about FTP'."
     else:
         # Check if the user mentioned a specific port we know about
         import re
