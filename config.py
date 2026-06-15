@@ -9,3 +9,4 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     N8N_WEBHOOK_URL = os.getenv('N8N_WEBHOOK_URL', None)
     GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', None)
+    NVD_API_KEY = os.getenv('NVD_API_KEY', None)

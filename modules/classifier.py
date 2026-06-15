@@ -1,5 +1,7 @@
 import requests
 import time
+import os
+import concurrent.futures
 
 # Cache to store NVD responses and avoid rate-limiting issues
 NVD_CACHE = {}
@@ -52,11 +54,17 @@ def fetch_nvd_data(service_name):
         return NVD_CACHE[normalized_service]
         
     try:
-        # Rate limiting: wait 6 seconds between requests (NVD public limit: 5/30s)
-        time.sleep(6)
+        api_key = os.getenv('NVD_API_KEY', None)
+        headers = {}
+        if api_key:
+            headers['apiKey'] = api_key
+        else:
+            # Without an API key, we sleep a short duration (1s) to allow fast parallel queries
+            # while minimizing public rate limit issues.
+            time.sleep(1)
         
         url = f"https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch={normalized_service}&resultsPerPage=1"
-        response = requests.get(url, timeout=10)
+        response = requests.get(url, headers=headers, timeout=10)
         
         if response.status_code == 200:
             data = response.json()
@@ -117,6 +125,19 @@ def add_risk_to_results(scan_results):
     """
     Tambahkan informasi risiko ke hasil scan
     """
+    # Pre-fetch NVD data concurrently for all unique services
+    services_to_fetch = set()
+    for port_info in scan_results['open_ports']:
+        service = port_info.get('service', 'Unknown')
+        normalized_service = service.lower().replace("-alt", "")
+        if normalized_service != "unknown" and normalized_service not in NVD_CACHE:
+            services_to_fetch.add(service)
+            
+    if services_to_fetch:
+        # Use concurrent executor to fetch in parallel
+        with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+            executor.map(fetch_nvd_data, services_to_fetch)
+            
     for port_info in scan_results['open_ports']:
         risk_info = classify_risk(port_info)
         port_info['risk_level'] = risk_info['level']
