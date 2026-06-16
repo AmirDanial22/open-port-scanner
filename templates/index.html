@@ -80,6 +80,73 @@
             </div>
         </div>
 
+        <!-- IP Discovery Guide Card -->
+        <div class="card" style="animation-delay: 0.1s; border-color: rgba(99,102,241,0.15) !important;">
+            <div class="card-header bg-primary d-flex align-items-center gap-2">
+                <i class="fas fa-info-circle" style="color: var(--accent-cyan);"></i>
+                <span class="fw-semibold">How to Find Your IP Address</span>
+            </div>
+            <div class="card-body">
+                <p class="small text-muted mb-3">
+                    To perform a scan, you need a target IP address. Depending on what network resource you want to test, check the instructions below:
+                </p>
+
+                <!-- Custom styled accordion -->
+                <div class="accordion" id="ipGuideAccordion">
+                    
+                    <!-- Windows -->
+                    <div class="accordion-item bg-transparent border-glass mb-2 rounded-3 overflow-hidden">
+                        <h2 class="accordion-header" id="headingWin">
+                            <button class="accordion-button collapsed bg-transparent text-primary fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWin" aria-expanded="false" aria-controls="collapseWin">
+                                <i class="fab fa-windows me-2" style="color: #0078d7;"></i>Windows (Local IP)
+                            </button>
+                        </h2>
+                        <div id="collapseWin" class="accordion-collapse collapse" aria-labelledby="headingWin" data-bs-parent="#ipGuideAccordion">
+                            <div class="accordion-body text-muted" style="font-size: 0.875rem;">
+                                <ol class="ps-3 mb-0">
+                                    <li class="mb-2">Press <kbd class="bg-dark text-light border border-secondary px-1 small">Win + R</kbd>, type <code class="text-info">cmd</code>, and press Enter to open Command Prompt.</li>
+                                    <li class="mb-2">Type the following command and press Enter:
+                                        <div class="d-flex align-items-center gap-2 mt-1">
+                                            <code class="p-2 bg-dark rounded border border-glass text-info flex-grow-1" id="cmdIpconfig">ipconfig</code>
+                                            <button class="btn btn-secondary btn-sm" onclick="copyText('cmdIpconfig', this)"><i class="fas fa-copy"></i></button>
+                                        </div>
+                                    </li>
+                                    <li>Look for <strong>IPv4 Address</strong> under your active network adapter (e.g. Wi-Fi or Ethernet). It usually starts with <code class="text-info">192.168.</code> or <code class="text-info">10.</code>.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- macOS / Linux -->
+                    <div class="accordion-item bg-transparent border-glass rounded-3 overflow-hidden">
+                        <h2 class="accordion-header" id="headingMac">
+                            <button class="accordion-button collapsed bg-transparent text-primary fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMac" aria-expanded="false" aria-controls="collapseMac">
+                                <i class="fab fa-apple me-1"></i><i class="fab fa-linux me-2"></i>macOS & Linux (Local IP)
+                            </button>
+                        </h2>
+                        <div id="collapseMac" class="accordion-collapse collapse" aria-labelledby="headingMac" data-bs-parent="#ipGuideAccordion">
+                            <div class="accordion-body text-muted" style="font-size: 0.875rem;">
+                                <ol class="ps-3 mb-0">
+                                    <li class="mb-2">Open the <strong>Terminal</strong> app.</li>
+                                    <li class="mb-2">Type either of the following commands and press Enter:
+                                        <div class="d-flex align-items-center gap-2 mt-1 mb-2">
+                                            <code class="p-2 bg-dark rounded border border-glass text-info flex-grow-1" id="cmdIpAddr">ip a || ip route</code>
+                                            <button class="btn btn-secondary btn-sm" onclick="copyText('cmdIpAddr', this)"><i class="fas fa-copy"></i></button>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <code class="p-2 bg-dark rounded border border-glass text-info flex-grow-1" id="cmdIfconfig">ifconfig</code>
+                                            <button class="btn btn-secondary btn-sm" onclick="copyText('cmdIfconfig', this)"><i class="fas fa-copy"></i></button>
+                                        </div>
+                                    </li>
+                                    <li>Look for `inet` or your active adapter's IPv4 address. It usually starts with <code class="text-info">192.168.</code> or <code class="text-info">10.</code>.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Capabilities Card -->
         <div class="card" style="animation-delay: 0.15s;">
             <div class="card-header d-flex align-items-center gap-2">
@@ -130,10 +197,53 @@
     </div>
 </div>
 
+<style>
+    /* Styling Accordion in Dark Mode */
+    .accordion-button:not(.collapsed) {
+        background-color: rgba(99, 102, 241, 0.1) !important;
+        color: var(--accent-cyan) !important;
+        box-shadow: none !important;
+    }
+    .accordion-button {
+        color: var(--text-primary) !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 1rem 1.25rem;
+    }
+    .accordion-button:focus {
+        box-shadow: none !important;
+    }
+    .accordion-item {
+        background-color: rgba(255, 255, 255, 0.01) !important;
+        border: 1px solid var(--border-glass) !important;
+        transition: all var(--transition-base);
+    }
+    .accordion-item:hover {
+        border-color: rgba(99, 102, 241, 0.2) !important;
+        background-color: rgba(255, 255, 255, 0.02) !important;
+    }
+</style>
+
 <script>
 function setIP(ip) {
     document.getElementById('ip_address').value = ip;
     document.getElementById('ip_address').focus();
+}
+
+function copyText(elementId, btnElement) {
+    const text = document.getElementById(elementId).innerText;
+    navigator.clipboard.writeText(text).then(() => {
+        const originalHtml = btnElement.innerHTML;
+        btnElement.innerHTML = '<i class="fas fa-check text-success"></i>';
+        btnElement.classList.add('border-success');
+        setTimeout(() => {
+            btnElement.innerHTML = originalHtml;
+            btnElement.classList.remove('border-success');
+        }, 1500);
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
+    });
 }
 </script>
 {% endblock %}
